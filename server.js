@@ -7,14 +7,12 @@ const app = express()
 
 app.use(morgan('dev'))
 
-app.use(function validateBearerToken(req,res,next){
+app.use(function validateBearerToken(req, res, next) {
     const apiToken = process.env.API_TOKEN
     const authToken = req.get('Authorization')
-    
-    if(!authToken || authToken.split(' ')[1] !== apiToken){
-        return res  
-                .status(401)
-                .json({error: 'Unauthorized request' })
+
+    if(!authToken||authToken !== apiToken){
+       return res.status(401).json({error: 'Unauthorized request' })
     }
     //move to next middleware
     next()
@@ -25,12 +23,13 @@ const validTypes = [`Bug`, `Dark`, `Dragon`, `Electric`, `Fairy`,
                     `Ice`, `Normal`, `Poison`, `Psychic`, `Rock`, `Steel`, `Water`]
 
 
-app.get('/types', function handleGetTypes(req,res){
+app.get('/types', function handleGetTypes(req,res) {
     res.json(validTypes)
   })
 
 
-app.get('/pokemon',function handleGetPokemon(req,res){
+app.get('/pokemon',function handleGetPokemon(req,res) {
+  
     let response = POKEDEX.pokemon;
 
     if(req.query.name){
@@ -41,8 +40,8 @@ app.get('/pokemon',function handleGetPokemon(req,res){
         response = response.filter(pokemon => pokemon.type.includes(req.query.type))
     }
     res.json(response)
-}
-)
+})
+
 const PORT = 8000
 
 app.listen(PORT, ()=>{
